@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.16'
+gem 'bootstrap-sass', '2.1'
 
 # last_comment method not available on rake 12.2.1
 gem 'rake', '~> 10.5'
