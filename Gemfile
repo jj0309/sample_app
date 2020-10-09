@@ -4,6 +4,9 @@ gem 'rails', '3.2.16'
 gem 'bootstrap-sass', '2.1'
 gem 'bcrypt-ruby', '3.0.1'
 
+gem 'nokogiri', '1.6.8.1'
+gem 'ffi', '1.0.11'
+
 # last_comment method not available on rake 12.2.1
 gem 'rake', '~> 10.5'
 
@@ -13,6 +16,7 @@ gem 'rake', '~> 10.5'
 group :development, :test do
   gem 'sqlite3', '1.3.5'
   gem 'rspec-rails', '2.11.0'
+  gem 'factory_girl_rails', '4.1.0'
 end
 
 group :development do
