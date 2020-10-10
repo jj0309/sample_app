@@ -12,10 +12,14 @@ class UsersController < ApplicationController
   end
 
   def new
+    verify_loggedin_redirect_to_root
+
     @user = User.new
   end
 
   def create
+    verify_loggedin_redirect_to_root
+
     @user = User.new(params[:user])
     if @user.save
       flash[:success] = "Welcome to the Sample App!"
@@ -39,6 +43,9 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    if( current_user?(User.find(params[:id])) )
+      redirect_to root_url
+    end
     User.find(params[:id]).destroy
     flash[:success] = "User destroyed"
     redirect_to(users_url)
