@@ -3,6 +3,9 @@ SampleApp::Application.routes.draw do
   resources :users #for /users/:id
   resources :sessions, only: [:new,:create,:destroy]
 
+  # routes for microposts, only create and destroy since we don't render any view (microposts are rendered from static_pages and users pages)
+  resources :microposts, only: [:create,:destroy]
+
   root to: 'static_pages#home'
 
   match '/signup', to: 'users#new'
