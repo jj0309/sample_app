@@ -12,7 +12,17 @@
 class User < ActiveRecord::Base
   attr_accessible(:email, :name, :password, :password_confirmation)
   has_secure_password
+
   has_many :microposts, dependent: :destroy
+  has_many :relationships, foreign_key: "follower_id",dependent: :destroy
+  # =>                                               source tells rails that the source of the followed_users array is the set of followed ids
+  has_many :followed_users, through: :relationships, source: :followed
+  #note that we actually have to include the classname because otherwise rails would look for a ReverseRelationship which doesn't exist
+  has_many :reverse_relationships, foreign_key: "followed_id",
+                                   class_name: "Relationship",
+                                   dependent: :destroy
+  #rails will singularize "followers" and automatically look for the foreign key follower_id
+  has_many :followers, through: :reverse_relationships, source: :follower
 
   before_save { email.downcase! }
   before_save :create_remember_token
@@ -28,8 +38,19 @@ class User < ActiveRecord::Base
   after_validation { self.errors.messages.delete(:password_digest) }
 
   def feed
-    # this is preliminary
-    Micropost.where("user_id = ?", id)
+    Micropost.from_users_followed_by(self)
+  end
+
+  def following?(other_user) # to check if its following other_user
+    relationships.find_by_followed_id(other_user.id)
+  end
+
+  def follow!(other_user)
+    relationships.create!(followed_id: other_user.id)
+  end
+
+  def unfollow!(other_user)
+    relationships.find_by_followed_id(other_user.id).destroy
   end
 
   private
